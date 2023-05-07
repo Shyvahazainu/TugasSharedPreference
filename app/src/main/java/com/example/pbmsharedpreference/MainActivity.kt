@@ -1,93 +1,33 @@
 package com.example.pbmsharedpreference
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.example.pbmsharedpreference.PreferenceHelper.clearValues
-import com.example.pbmsharedpreference.PreferenceHelper.customPreference
-import com.example.pbmsharedpreference.PreferenceHelper.defaultPreference
-import com.example.pbmsharedpreference.PreferenceHelper.password
-import com.example.pbmsharedpreference.PreferenceHelper.userId
-import kotlinx.android.synthetic.main.activity_main.*
-import android.preference.PreferenceManager as PreferenceManager1
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.preference.PreferenceManager
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
-
-    val CUSTOM_PREF_NAME = "User_data"
-
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        btnSave.setOnClickListener(this)
-        btnClear.setOnClickListener(this)
-        btnShow.setOnClickListener(this)
-        btnShowDefault.setOnClickListener(this)
+        // Get the button
+        val btnPrintPrefs = findViewById<Button>(R.id.btn_print_prefs)
 
-    }
+        // Set a click listener for the button
+        btnPrintPrefs.setOnClickListener {
+            // Get the username and password from the shared preferences
+            val usernameEditText = findViewById<EditText>(R.id.editText)
+            val passwordEditText = findViewById<EditText>(R.id.editText2)
 
-    override fun onClick(v: View?) {
-        val prefs = customPreference(this, CUSTOM_PREF_NAME)
-        when (v?.id) {
-            R.id.btnSave -> {
-                prefs.password = inPassword.text.toString()
-                prefs.userId = inUserId.text.toString().toInt()
-            }
-            R.id.btnClear -> {
-                prefs.clearValues()
-            }
-            R.id.btnShow -> {
-                inUserId.setText(prefs.userId.toString())
-                inPassword.setText(prefs.password)
-            }
-            R.id.btnShowDefault -> {
-                val defaultPrefs = defaultPreference(this)
-                inUserId.setText(defaultPrefs.userId.toString())
-                inPassword.setText(defaultPrefs.password)
-            }
+// Get the values from the EditText
+            val username = usernameEditText.text.toString()
+            val password = passwordEditText.text.toString()
+
+// Print the values to the console
+            println("Username: $username")
+            println("Password: $password")
         }
     }
-
-}
-
-object PreferenceHelper {
-
-    val USER_ID = "USER_ID"
-    val USER_PASSWORD = "PASSWORD"
-
-    fun defaultPreference(context: Context): SharedPreferences = PreferenceManager1.getDefaultSharedPreferences(context)
-
-    fun customPreference(context: Context, name: String): SharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
-
-    inline fun SharedPreferences.editMe(operation: (SharedPreferences.Editor) -> Unit) {
-        val editMe = edit()
-        operation(editMe)
-        editMe.apply()
-    }
-
-    var SharedPreferences.userId
-        get() = getInt(USER_ID, 0)
-        set(value) {
-            editMe {
-                it.putInt(USER_ID, value)
-            }
-        }
-
-    var SharedPreferences.password
-        get() = getString(USER_PASSWORD, "")
-        set(value) {
-            editMe {
-                it.putString(USER_PASSWORD, value)
-            }
-        }
-
-    var SharedPreferences.clearValues
-        get() = {}
-        set(value) {
-            editMe {
-                it.clear()
-            }
-        }
 }

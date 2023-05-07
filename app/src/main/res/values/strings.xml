@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PBMSharedPreference</string>
+    <string name="Password" />
+    <string name="Username" />
 </resources>
